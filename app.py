@@ -20,8 +20,13 @@ season_id = st.selectbox("Select Season", fifa_male[fifa_male['competition_id'] 
 # Get matches for the selected competition and season
 matches = sb.matches(competition_id=competition_id, season_id=season_id)
 
-# Dropdown to select a match
-match_id = st.selectbox("Select Match", matches['match_id'])
+# Create a dictionary to map each match ID to a readable format, e.g., "Team1 vs Team2"
+match_options = {row['match_id']: f"{row['home_team']} vs {row['away_team']}" for _, row in matches.iterrows()}
+
+# Dropdown to select a match (display as "Home Team vs Away Team")
+match_id = st.selectbox("Select Match", options=list(match_options.keys()), format_func=lambda x: match_options[x])
+
+# Get the match info based on the selected match_id
 match_info = matches[matches['match_id'] == match_id]
 team1, team2 = match_info.iloc[0]['home_team'], match_info.iloc[0]['away_team']
 
